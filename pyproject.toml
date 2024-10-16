@@ -1,0 +1,24 @@
+[build-system]
+requires = ["flit_core>=3.4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "poppy"
+version = "0.0.1"
+authors = [
+  { name="ymat2", email="ymat2@users.noreply.github.com" },
+]
+description = "Personal python package for population genomics"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = [
+  "pandas"
+]
+
+[project.urls]
+Homepage = "https://ymat2.github.io"
+Repository = "https://github.com/ymat2/poppy"
+
+[project.scripts]
+"poppy" = "poppy.poppy:main"
