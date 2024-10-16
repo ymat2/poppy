@@ -5,6 +5,10 @@ import time
 def command_summary(args):
     print("Command poppy::summary starts.")
     start = time.time()
+    if args.type == "flag":
+        from poppy.flag_summary import flag_summary
+        print("\tSummarizing flag stats...")
+        flag_summary(args.indir, args.outfile)
     if args.type == "bam":
         from poppy.mapping_summary import mapping_summary
         print("\tSummarizing mapping stats...")
@@ -28,7 +32,7 @@ def main():
                                 help = "PATH to directory that contains stat files.")
     parser_summary.add_argument("-o", "--outfile",
                                 help = "PATH to output file.")
-    parser_summary.add_argument("-t", "--type", choices = ["bam", "vcf"],
+    parser_summary.add_argument("-t", "--type", choices = ["flag", "bam", "vcf"],
                                 help = "Output filetype to summarize.")
     parser_summary.set_defaults(handler = command_summary)
 

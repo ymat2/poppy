@@ -49,7 +49,3 @@ def summarize_stat(path):
     stats = list(map(str, stats))
 
     return stats
-
-
-if __name__ == "__main__":
-    mapping_summary()
