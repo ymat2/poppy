@@ -11,7 +11,7 @@ def vcf_summary(indir, outfile):
 
         for sample in samples:
             sample = sample.split("/")[-1]
-            vcfstat = indir+"/"+sample+"/"+sample+".vcf.stat"
+            vcfstat = indir+"/"+sample+"/"+sample+".q.vcf.stat"  # should be specified as argument
             stats = summarize_vcfstat(vcfstat)
             f.write(sample+"\t"+"\t".join(stats)+"\n")
             print("\t", vcfstat)
@@ -35,7 +35,7 @@ def summarize_vcfstat(path):
 
             if line.startswith("DP"):
                 dp = line.rstrip("\n").split("\t")[2]
-                dps.append(int(dp))
+                dps.append(int(dp.lstrip(">")))  # in case of >500
 
         #print(sn)
         n_record = sn["number of records:"]
