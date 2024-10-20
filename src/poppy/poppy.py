@@ -2,6 +2,12 @@ import argparse
 import time
 
 
+def command_init(args):  # empty argument does not work
+    from poppy.initialize import initialize_proj
+    initialize_proj(args.proj)
+    print("Command poppy::init. Initialized project {}".format(args.proj))
+
+
 def command_summary(args):
     print("Command poppy::summary starts.")
     start = time.time()
@@ -32,6 +38,13 @@ def command_remove_invariant_site(args):
 def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
+
+    # init
+    help_txt = "Initialize project directory."
+    help_txt += "See `poppy init -h`"
+    parser_init = subparsers.add_parser("init", help = help_txt)
+    parser_init.add_argument("proj", help = "Path to project dorectory.", default = "./")
+    parser_init.set_defaults(handler = command_init)
 
     # summary
     help_txt = "Summary stat files to generate tsv."
