@@ -3,6 +3,13 @@ import time
 import os
 
 
+parser = argparse.ArgumentParser(
+    description = "Miscellaneous python scripts for population genomics.",
+    usage = "poppy <commands> [-h/--help] [Options]"
+)
+subparsers = parser.add_subparsers(title = "Commands")
+
+
 def command_init(args):
     from poppy.initialize import initialize_proj
     initialize_proj(args.proj)
@@ -41,18 +48,21 @@ def command_extract_seq(args):
     main(args)
 
 
+def command_help(args):
+    if args.command == "self":
+        parser.print_help()
+    else:
+        print(parser.parse_args([args.command, '--help']))
+
+
 def main():
-    parser = argparse.ArgumentParser(
-        description = "Miscellaneous python scripts for population genomics.",
-        usage = "poppy <commands> [-h/--help] [Options]"
-    )
-    subparsers = parser.add_subparsers(title = "Commands")
 
     # init
     help_txt = "Initialize project directory."
-    help_txt += "See `poppy init -h`"
+    help_txt += " See `poppy init -h`"
     parser_init = subparsers.add_parser("init", help = help_txt)
-    parser_init.add_argument("proj", nargs = "?", help = "Path to project dorectory.", default = os.getcwd())
+    parser_init.add_argument("proj", nargs = "?", default = os.getcwd(),
+                             help = "Path to project dorectory.")
     parser_init.set_defaults(handler = command_init)
 
     # summary
@@ -94,6 +104,12 @@ def main():
     parser_exs.add_argument("--ref", help = "Reference nucleotide.")
     parser_exs.add_argument("--alt", help = "Alternative variant.")
     parser_exs.set_defaults(handler = command_extract_seq)
+
+    # help
+    parser_help = subparsers.add_parser("help", help = "Show help for commands.")
+    parser_help.add_argument("command", nargs = "?", default = "self",
+                             help = "Command to show help message.")
+    parser_help.set_defaults(handler = command_help)
 
     args = parser.parse_args()
     if hasattr(args, "handler"):
