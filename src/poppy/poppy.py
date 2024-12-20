@@ -22,15 +22,15 @@ def command_summary(args):
     if args.type == "flag":
         from poppy.flag_summary import flag_summary
         print("\tSummarizing flag stats...")
-        flag_summary(args.indir, args.outfile)
+        flag_summary(args.indir, args.outfile, args.suffix)
     if args.type == "bam":
         from poppy.mapping_summary import mapping_summary
         print("\tSummarizing mapping stats...")
-        mapping_summary(args.indir, args.outfile)
+        mapping_summary(args.indir, args.outfile, args.suffix)
     if args.type == "vcf":
         from poppy.vcf_summary import vcf_summary
         print("\tSummarizing VCF stats...")
-        vcf_summary(args.indir, args.outfile)
+        vcf_summary(args.indir, args.outfile, args.suffix)
     print("Command poppy::summary ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
@@ -75,6 +75,8 @@ def main():
                                 help = "PATH to output file.")
     parser_summary.add_argument("-t", "--type", choices = ["flag", "bam", "vcf"],
                                 help = "Output filetype to summarize.")
+    parser_summary.add_argument("--suffix",
+                                help = "Suffix of files to summary.")
     parser_summary.set_defaults(handler = command_summary)
 
     # remove_invariant_site

@@ -1,7 +1,12 @@
 import glob
 
 
-def vcf_summary(indir, outfile):
+def vcf_summary(indir, outfile, suffix):
+
+    if suffix:
+        suffix = suffix.lstrip(".")
+    else:
+        suffix = "vcf.stat"
 
     samples = glob.glob(indir+"/*")
     with open(outfile, "w") as f:
@@ -11,7 +16,7 @@ def vcf_summary(indir, outfile):
 
         for sample in samples:
             sample = sample.split("/")[-1]
-            vcfstat = indir+"/"+sample+"/"+sample+".q.vcf.stat"  # should be specified as argument
+            vcfstat = indir+"/"+sample+"/"+sample+"."+suffix
             stats = summarize_vcfstat(vcfstat)
             f.write(sample+"\t"+"\t".join(stats)+"\n")
             print("\t", vcfstat)

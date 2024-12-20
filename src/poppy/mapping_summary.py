@@ -2,7 +2,12 @@ import glob
 import pandas as pd
 
 
-def mapping_summary(indir, outfile):
+def mapping_summary(indir, outfile, suffix):
+
+    if suffix:
+        suffix = suffix.lstrip(".")
+    else:
+        suffix = "cov"
 
     samples = glob.glob(indir+"/*")
     with open(outfile, "w") as f:
@@ -12,7 +17,7 @@ def mapping_summary(indir, outfile):
 
         for sample in samples:
             sample = sample.split("/")[-1]
-            cov_file = indir+"/"+sample+"/"+sample+".cov"
+            cov_file = indir+"/"+sample+"/"+sample+"."+suffix
             stats = summarize_stat(cov_file)
             f.write(sample+"\t"+"\t".join(stats)+"\n")
             print("\t", cov_file)

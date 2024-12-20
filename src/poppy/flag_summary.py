@@ -1,7 +1,12 @@
 import glob
 from pathlib import Path
 
-def flag_summary(indir, outfile):
+def flag_summary(indir, outfile, suffix):
+
+    if suffix:
+        suffix = suffix.lstrip(".")
+    else:
+        suffix = "stat"
 
     samples = glob.glob(indir+"/*")
     with open(outfile, "w") as f:
@@ -9,7 +14,7 @@ def flag_summary(indir, outfile):
         f.write(_header)
         for sample in samples:
             sample = sample.split("/")[-1]
-            flag_stat_file = indir+"/"+sample+"/"+sample+".stat"
+            flag_stat_file = indir+"/"+sample+"/"+sample+"."+suffix
             print("\t", flag_stat_file)
             stats = get_mapped_reads_info(flag_stat_file)
             f.write(sample+"\t"+"\t".join(stats)+"\n")
