@@ -10,12 +10,6 @@ parser = argparse.ArgumentParser(
 subparsers = parser.add_subparsers(title = "Commands")
 
 
-def command_init(args):
-    from poppy.initialize import initialize_proj
-    initialize_proj(args.proj)
-    print("Command poppy::init. Initialized project {}".format(args.proj))
-
-
 def command_summary(args):
     print("Command poppy::summary starts.")
     start = time.time()
