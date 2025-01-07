@@ -1,7 +1,10 @@
-def remove_invariant_site(infile, outfile, format):
+from pathlib import Path
+
+def alnkit(trim: bool, infile: Path, outfile: Path, format: str):
 
     f = read_phylip(infile)
-    f = remove_invariant_sites(f)
+    if trim:
+        f = remove_invariant_sites(f)
 
     #if args.output:
     #    outfile = args.output
@@ -42,10 +45,8 @@ def remove_invariant_sites(dct):
     lv = 0
     print("\nMSA has", l, "sites.")
     for i in range(l):
-        if i == 10000:
-            print("\t10000 sites are validated.")
-        if i in range(100000, 10000001, 100000):
-            print(f"\t{i} sites are validated.")
+        if i>0 and i % 50000 == 0:
+            print("\t{:d} sites are validated.".format(i))
         if is_varsite(dct, i):
             lv += 1
             for k,v in dct.items():

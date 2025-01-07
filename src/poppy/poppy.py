@@ -1,6 +1,5 @@
 import argparse
 import time
-import os
 
 
 parser = argparse.ArgumentParser(
@@ -26,13 +25,13 @@ def command_vcfkit(args):
     print("Command poppy::vcfkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
-def command_remove_invariant_site(args):
-    print("Command poppy::remove_invariant_site starts.")
+def command_alnkit(args):
+    print("Command poppy::alnkit starts.")
     start = time.time()
-    from poppy.remove_invariant_site import remove_invariant_site
+    from poppy.alnkit import alnkit
     print("\tRemoving invariant sites...")
-    remove_invariant_site(args.infile, args.outfile, args.format)
-    print("Command poppy::remove_invariant_site ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
+    alnkit(args.trim, args.infile, args.outfile, args.format)
+    print("Command poppy::alnkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
 def command_extract_seq(args):
@@ -70,22 +69,24 @@ def main():
     parser_vcfkit.add_argument("-i", "--infile", dest = "vcf",
                                help = "Input VCF file name. Can be gzipped.")
     parser_vcfkit.add_argument("-o", "--outfile",
-                               help = "PATH to output file (stdout by default).")
+                               help = "PATH to output file (default: stdout).")
     parser_vcfkit.add_argument("--count", action = "store_true",
                                help = "Count number of each genotype.")
     parser_vcfkit.set_defaults(handler = command_vcfkit)
 
-    # remove_invariant_site
-    help_txt = "Remove invariant sites from alignment."
-    help_txt += " See `poppy remove_invariant_site -h`."
-    parser_ris = subparsers.add_parser("remove_invariant_site", help = help_txt)
-    parser_ris.add_argument("-i", "--infile",
-                            help = "PATH to input alignment file. PHYLIP from vcf2phylip is assumed.")
-    parser_ris.add_argument("-o", "--outfile",
-                            help = "PATH to output alignment file.")
-    parser_ris.add_argument("--format", choices = ["fasta", "phylip"],
-                            help = "Format of output alignment.")
-    parser_ris.set_defaults(handler = command_remove_invariant_site)
+    # alnkit
+    help_txt = "Handle alignment file."
+    help_txt += " See `poppy alnkit -h`."
+    parser_alnkit = subparsers.add_parser("alnkit", help = help_txt)
+    parser_alnkit.add_argument("--trim", action = "store_true", default = True,
+                               help = "Remove invariant sites. (default: True)")
+    parser_alnkit.add_argument("-i", "--infile",
+                               help = "PATH to input alignment file. PHYLIP from vcf2phylip is assumed.")
+    parser_alnkit.add_argument("-o", "--outfile",
+                               help = "PATH to output alignment file.")
+    parser_alnkit.add_argument("--format", choices = ["fasta", "phylip"],
+                               help = "Format of output alignment.")
+    parser_alnkit.set_defaults(handler = command_alnkit)
 
     # extract_seq
     help_txt = "Extract partial sequence around variant."
