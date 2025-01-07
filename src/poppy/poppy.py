@@ -7,25 +7,23 @@ parser = argparse.ArgumentParser(
     description = "Miscellaneous python scripts for population genomics.",
     usage = "poppy <commands> [-h/--help] [Options]"
 )
-subparsers = parser.add_subparsers(title = "Commands")
+subparsers = parser.add_subparsers(title = "Commands", metavar = "")
 
 
 def command_summary(args):
     print("Command poppy::summary starts.")
     start = time.time()
-    if args.type == "flag":
-        from poppy.flag_summary import flag_summary
-        print("\tSummarizing flag stats...")
-        flag_summary(args.indir, args.outfile, args.suffix)
-    if args.type == "bam":
-        from poppy.mapping_summary import mapping_summary
-        print("\tSummarizing mapping stats...")
-        mapping_summary(args.indir, args.outfile, args.suffix)
-    if args.type == "vcf":
-        from poppy.vcf_summary import vcf_summary
-        print("\tSummarizing VCF stats...")
-        vcf_summary(args.indir, args.outfile, args.suffix)
+    from poppy.summary_main import summary_main
+    summary_main(args.indir, args.outfile, args.type, args.suffix)
     print("Command poppy::summary ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
+
+
+def command_vcfkit(args):
+    print("Command poppy::vcfkit starts.")
+    start = time.time()
+    from poppy.vcfkit import vcfkit
+    vcfkit(args)
+    print("Command poppy::vcfkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
 def command_remove_invariant_site(args):
@@ -51,17 +49,9 @@ def command_help(args):
 
 def main():
 
-    # init
-    help_txt = "Initialize project directory."
-    help_txt += " See `poppy init -h`"
-    parser_init = subparsers.add_parser("init", help = help_txt)
-    parser_init.add_argument("proj", nargs = "?", default = os.getcwd(),
-                             help = "Path to project dorectory.")
-    parser_init.set_defaults(handler = command_init)
-
     # summary
-    help_txt = "Summary stat files to generate tsv."
-    help_txt += " See `poppy summary -h`"
+    help_txt = "Scan directory to summarize stat files."
+    help_txt += " See `poppy summary -h`."
     parser_summary = subparsers.add_parser("summary", help = help_txt)
     parser_summary.add_argument("-i", "--indir",
                                 help = "PATH to directory that contains stat files.")
@@ -70,12 +60,24 @@ def main():
     parser_summary.add_argument("-t", "--type", choices = ["flag", "bam", "vcf"],
                                 help = "Output filetype to summarize.")
     parser_summary.add_argument("--suffix",
-                                help = "Suffix of files to summary.")
+                                help = "Suffix of files to summary. (e.g. vcf.stat, cov, etc.)")
     parser_summary.set_defaults(handler = command_summary)
+
+    # vcfkit
+    help_txt = "Handle single VCF file."
+    help_txt += " See `poppy vcflit -h`."
+    parser_vcfkit = subparsers.add_parser("vcfkit", help = help_txt)
+    parser_vcfkit.add_argument("-i", "--infile", dest = "vcf",
+                               help = "Input VCF file name. Can be gzipped.")
+    parser_vcfkit.add_argument("-o", "--outfile",
+                               help = "PATH to output file (stdout by default).")
+    parser_vcfkit.add_argument("--count", action = "store_true",
+                               help = "Count number of each genotype.")
+    parser_vcfkit.set_defaults(handler = command_vcfkit)
 
     # remove_invariant_site
     help_txt = "Remove invariant sites from alignment."
-    help_txt += " See `poppy remove_invariant_site -h`"
+    help_txt += " See `poppy remove_invariant_site -h`."
     parser_ris = subparsers.add_parser("remove_invariant_site", help = help_txt)
     parser_ris.add_argument("-i", "--infile",
                             help = "PATH to input alignment file. PHYLIP from vcf2phylip is assumed.")
@@ -87,7 +89,7 @@ def main():
 
     # extract_seq
     help_txt = "Extract partial sequence around variant."
-    help_txt += " See `poppy extract_seq -h`"
+    help_txt += " See `poppy extract_seq -h`."
     parser_exs = subparsers.add_parser("extract_seq", help = help_txt)
     parser_exs.add_argument("-f", "--fasta",
                             help  = "PATH to FASTA file of genome sequence.")
@@ -102,7 +104,9 @@ def main():
     parser_exs.set_defaults(handler = command_extract_seq)
 
     # help
-    parser_help = subparsers.add_parser("help", help = "Show help for commands.")
+    help_txt = "Show help for commands."
+    help_txt += " e.g. `poppy help summary`."
+    parser_help = subparsers.add_parser("help", help = help_txt)
     parser_help.add_argument("command", nargs = "?", default = "self",
                              help = "Command to show help message.")
     parser_help.set_defaults(handler = command_help)
