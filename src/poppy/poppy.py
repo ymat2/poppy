@@ -21,7 +21,7 @@ def command_vcfkit(args):
     print("Command poppy::vcfkit starts.")
     start = time.time()
     from poppy.vcfkit import vcfkit
-    vcfkit(args.mode, args.vcf, args.outfile)
+    vcfkit(args.mode, args)
     print("Command poppy::vcfkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
@@ -66,10 +66,12 @@ def main():
     help_txt = "Handle single VCF file."
     help_txt += " See `poppy vcflit -h`."
     parser_vcfkit = subparsers.add_parser("vcfkit", help = help_txt)
-    parser_vcfkit.add_argument("-m", "--mode", choices = ["count"],
+    parser_vcfkit.add_argument("-m", "--mode", choices = ["count", "select"],
                                help = "Count number of each genotype.")
     parser_vcfkit.add_argument("-i", "--infile", dest = "vcf",
                                help = "Input VCF file name. Can be gzipped.")
+    parser_vcfkit.add_argument("-r", "--region",
+                               help = "Position to select (format: `Chromosome:Position`).")
     parser_vcfkit.add_argument("-o", "--outfile",
                                help = "PATH to output file (default: stdout).")
     parser_vcfkit.set_defaults(handler = command_vcfkit)
