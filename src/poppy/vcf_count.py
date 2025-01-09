@@ -104,7 +104,7 @@ def get_count_variant(vcf: Path) -> dict:
 
                 line = line.rstrip("\n")
                 if line and not line.startswith("#"):
-                    record = dict(zip(FIELDS, line.split("\t")))
+                    record = dict(zip(FIELDS, line.split()))
                     if is_multiallelic(record):
                         variant_count["multi"] += 1
                         continue
