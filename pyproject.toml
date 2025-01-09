@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "poppy"
-version = "0.0.7"
+version = "0.0.8"
 authors = [
   { name="ymat2", email="ymat2@users.noreply.github.com" },
 ]

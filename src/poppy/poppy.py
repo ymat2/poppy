@@ -1,11 +1,17 @@
 import argparse
 import time
 
+from importlib import metadata
+
+
+__version__ = metadata.version("poppy")
 
 parser = argparse.ArgumentParser(
     description = "Miscellaneous python scripts for population genomics.",
     usage = "poppy <commands> [-h/--help] [Options]"
 )
+parser.add_argument("-V", "--version", action = "version", version = __version__,
+                    help = "Show the version number")
 subparsers = parser.add_subparsers(title = "Commands", metavar = "")
 
 
