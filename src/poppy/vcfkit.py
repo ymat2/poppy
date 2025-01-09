@@ -1,14 +1,14 @@
 from pathlib import Path
 
-def vcfkit(args):
+def vcfkit(mode: str, vcf: Path, outfile: Path):
 
-    if args.count:
+    if mode == "count":
         from poppy.vcf_count import get_count_variant
-        d = get_count_variant(args.vcf)
-        output = args.vcf+"\t"
+        d = get_count_variant(vcf)
+        output = vcf+"\t"
         output += "\t".join([str(k)+":"+str(v) for k,v in d.items()])
-        if args.outfile:
-            with open(args.outfile, "w") as f:
+        if outfile:
+            with open(outfile, "w") as f:
                 f.write(output+"\n")
         else:
             print(output)

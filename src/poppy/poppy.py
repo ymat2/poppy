@@ -13,7 +13,7 @@ def command_summary(args):
     print("Command poppy::summary starts.")
     start = time.time()
     from poppy.summary_main import summary_main
-    summary_main(args.indir, args.outfile, args.type, args.suffix)
+    summary_main(args.mode, args.indir, args.outfile, args.suffix)
     print("Command poppy::summary ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
@@ -21,7 +21,7 @@ def command_vcfkit(args):
     print("Command poppy::vcfkit starts.")
     start = time.time()
     from poppy.vcfkit import vcfkit
-    vcfkit(args)
+    vcfkit(args.mode, args.vcf, args.outfile)
     print("Command poppy::vcfkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
@@ -30,13 +30,13 @@ def command_alnkit(args):
     start = time.time()
     from poppy.alnkit import alnkit
     print("\tRemoving invariant sites...")
-    alnkit(args.trim, args.infile, args.outfile, args.format)
+    alnkit(args.mode, args.aln, args.outfile, args.format)
     print("Command poppy::alnkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
-def command_extract_seq(args):
-    from poppy.extract_seq import main
-    main(args)
+def command_faskit(args):
+    from poppy.faskit import faskit
+    faskit(args.mode, args)
 
 
 def command_help(args):
@@ -52,12 +52,12 @@ def main():
     help_txt = "Scan directory to summarize stat files."
     help_txt += " See `poppy summary -h`."
     parser_summary = subparsers.add_parser("summary", help = help_txt)
+    parser_summary.add_argument("-m", "--mode", choices = ["flag", "bam", "vcf"],
+                                help = "Output filetype to summarize.")
     parser_summary.add_argument("-i", "--indir",
                                 help = "PATH to directory that contains stat files.")
     parser_summary.add_argument("-o", "--outfile",
                                 help = "PATH to output file.")
-    parser_summary.add_argument("-t", "--type", choices = ["flag", "bam", "vcf"],
-                                help = "Output filetype to summarize.")
     parser_summary.add_argument("--suffix",
                                 help = "Suffix of files to summary. (e.g. vcf.stat, cov, etc.)")
     parser_summary.set_defaults(handler = command_summary)
@@ -66,21 +66,21 @@ def main():
     help_txt = "Handle single VCF file."
     help_txt += " See `poppy vcflit -h`."
     parser_vcfkit = subparsers.add_parser("vcfkit", help = help_txt)
+    parser_vcfkit.add_argument("-m", "--mode", choices = ["count"],
+                               help = "Count number of each genotype.")
     parser_vcfkit.add_argument("-i", "--infile", dest = "vcf",
                                help = "Input VCF file name. Can be gzipped.")
     parser_vcfkit.add_argument("-o", "--outfile",
                                help = "PATH to output file (default: stdout).")
-    parser_vcfkit.add_argument("--count", action = "store_true",
-                               help = "Count number of each genotype.")
     parser_vcfkit.set_defaults(handler = command_vcfkit)
 
     # alnkit
-    help_txt = "Handle alignment file."
+    help_txt = "Handle an alignment file."
     help_txt += " See `poppy alnkit -h`."
     parser_alnkit = subparsers.add_parser("alnkit", help = help_txt)
-    parser_alnkit.add_argument("--trim", action = "store_true", default = True,
-                               help = "Remove invariant sites. (default: True)")
-    parser_alnkit.add_argument("-i", "--infile",
+    parser_alnkit.add_argument("-m", "--mode", choices = ["trim"],
+                               help = "Remove invariant sites.")
+    parser_alnkit.add_argument("-i", "--infile", dest = "aln",
                                help = "PATH to input alignment file. PHYLIP from vcf2phylip is assumed.")
     parser_alnkit.add_argument("-o", "--outfile",
                                help = "PATH to output alignment file.")
@@ -88,21 +88,23 @@ def main():
                                help = "Format of output alignment.")
     parser_alnkit.set_defaults(handler = command_alnkit)
 
-    # extract_seq
-    help_txt = "Extract partial sequence around variant."
-    help_txt += " See `poppy extract_seq -h`."
-    parser_exs = subparsers.add_parser("extract_seq", help = help_txt)
-    parser_exs.add_argument("-f", "--fasta",
-                            help  = "PATH to FASTA file of genome sequence.")
-    parser_exs.add_argument("-c", "--chrom",
-                            help = "Chromosome or contig name.")
-    parser_exs.add_argument("-p", "--pos", type = int,
-                            help = "Position of variant.")
-    parser_exs.add_argument("-r", "--range", type = int,
-                            help = "Range of sequences too show around variant.")
-    parser_exs.add_argument("--ref", help = "Reference nucleotide.")
-    parser_exs.add_argument("--alt", help = "Alternative variant.")
-    parser_exs.set_defaults(handler = command_extract_seq)
+    # faskit
+    help_txt = "Handle a FASTA file."
+    help_txt += " See `poppy faskit -h`."
+    parser_faskit = subparsers.add_parser("faskit", help = help_txt)
+    parser_faskit.add_argument("-m", "--mode", choices = ["extract"],
+                               help = "Extract partial sequence from FASTA file.")
+    parser_faskit.add_argument("-f", "--fasta",
+                               help  = "PATH to FASTA file of genome sequence.")
+    parser_faskit.add_argument("-c", "--chrom",
+                               help = "Chromosome or contig name.")
+    parser_faskit.add_argument("-p", "--pos", type = int,
+                               help = "Position of variant.")
+    parser_faskit.add_argument("-r", "--range", type = int,
+                               help = "Range of sequences too show around variant.")
+    parser_faskit.add_argument("--ref", help = "Reference nucleotide.")
+    parser_faskit.add_argument("--alt", help = "Alternative variant.")
+    parser_faskit.set_defaults(handler = command_faskit)
 
     # help
     help_txt = "Show help for commands."

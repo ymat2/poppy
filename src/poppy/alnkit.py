@@ -1,9 +1,9 @@
 from pathlib import Path
 
-def alnkit(trim: bool, infile: Path, outfile: Path, format: str):
+def alnkit(mode: str, infile: Path, outfile: Path, format: str):
 
     f = read_phylip(infile)
-    if trim:
+    if mode == "trim":
         f = remove_invariant_sites(f)
 
     #if args.output:
