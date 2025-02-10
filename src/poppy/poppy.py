@@ -70,7 +70,7 @@ def main():
 
     # vcfkit
     help_txt = "Handle single VCF file."
-    help_txt += " See `poppy vcflit -h`."
+    help_txt += " See `poppy vcfkit -h`."
     parser_vcfkit = subparsers.add_parser("vcfkit", help = help_txt)
     parser_vcfkit.add_argument("-m", "--mode", choices = ["count", "select"],
                                help = "Count number of each genotype.")
