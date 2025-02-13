@@ -6,14 +6,6 @@ from importlib import metadata
 
 __version__ = metadata.version("poppy")
 
-parser = argparse.ArgumentParser(
-    description = "Miscellaneous python scripts for population genomics.",
-    usage = "poppy <commands> [-h/--help] [Options]"
-)
-parser.add_argument("-V", "--version", action = "version", version = __version__,
-                    help = "Show the version number")
-subparsers = parser.add_subparsers(title = "Commands", metavar = "")
-
 
 def command_summary(args):
     print("Command poppy::summary starts.")
@@ -45,6 +37,11 @@ def command_faskit(args):
     faskit(args.mode, args)
 
 
+def command_gensh(args):
+    from poppy.gensh import generate_new_sh
+    generate_new_sh(args.outfile, args)
+
+
 def command_help(args):
     if args.command == "self":
         parser.print_help()
@@ -53,6 +50,15 @@ def command_help(args):
 
 
 def main():
+
+    # global arguments
+    parser = argparse.ArgumentParser(
+        description = "Miscellaneous python scripts for population genomics.",
+        usage = "poppy <commands> [-h/--help] [Options]"
+    )
+    parser.add_argument("-V", "--version", action = "version", version = __version__,
+                        help = "Show the version number")
+    subparsers = parser.add_subparsers(title = "Commands", metavar = "")
 
     # summary
     help_txt = "Scan directory to summarize stat files."
@@ -113,6 +119,19 @@ def main():
     parser_faskit.add_argument("--ref", help = "Reference nucleotide.")
     parser_faskit.add_argument("--alt", help = "Alternative variant.")
     parser_faskit.set_defaults(handler = command_faskit)
+
+    # gensh
+    help_txt = "Generate sh file with default settings."
+    help_txt += " See `poppy help gensh`."
+    parser_gensh = subparsers.add_parser("gensh", help = help_txt)
+    parser_gensh.add_argument("-o", "--outfile",
+                              help = "PATH to sh file to be generated.")
+    parser_gensh.add_argument("-m", "--memory",
+                              help = "Memory to require. `4G` for default but not written in sh.")
+    parser_gensh.add_argument("-t", "--time",
+                              help = "Time to require. `72:00:00` (72h) for default but not written in sh.")
+    parser_gensh.set_defaults(handler = command_gensh)
+
 
     # help
     help_txt = "Show help for commands."
