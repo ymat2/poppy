@@ -99,7 +99,7 @@ def get_count_variant(vcf: Path) -> dict:
                 break
             for line in vcf_chunk:
                 total_variants += 1
-                if total_variants % CHUNK_SIZE == 0:
+                if total_variants % CHUNK_SIZE * 10 == 0:
                     print("{:d} lines processed.".format(total_variants))
 
                 line = line.rstrip("\n")
