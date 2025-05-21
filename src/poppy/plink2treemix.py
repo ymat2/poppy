@@ -7,7 +7,7 @@ def plink2treemix(input: Path, output: Path):
     write_treemix(lines, pops, output)
 
 
-def parse_plink(plink: Path) -> (dict, list):
+def parse_plink(plink: Path) -> tuple[dict, list]:
     rs2pop = dict()
     pops = list()
 
