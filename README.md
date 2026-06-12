@@ -1,6 +1,6 @@
 # POPPY
 
-A personal python scripts for population genomics
+A personal python scripts for genomic data
 
 
 ## Installation
@@ -28,22 +28,16 @@ poppy --help
 
 Example usages:
 
-1. Count number of variants per variant type in single-sample VCF.
-
-```sh
-poppy vcfkit --mode count -i <VCF>
-```
-
-2. Extract partial sequence from FASTA.
+1. Extract partial sequence from FASTA.
 
 ```sh
 poppy faskit --mode exract --fasta <fasta> --chrom <chromosome> --pos <position> --range 50
 ```
 
-3. Remove invariant sites from alignment.
+2. Remove invariant sites from alignment.
 
 ```sh
 poppy alnkit --mode trim -i <alignment> -o <outfile> --format fasta
 ```
 
-See also `poppy --help` / `poppy help <command>`.
+See also `poppy --help` / `poppy <command> --help`.
