@@ -15,14 +15,6 @@ def command_summary(args):
     print("Command poppy::summary ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
-def command_vcfkit(args):
-    print("Command poppy::vcfkit starts.")
-    start = time.time()
-    from poppy.vcfkit import vcfkit
-    vcfkit(args.mode, args)
-    print("Command poppy::vcfkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
-
-
 def command_alnkit(args):
     print("Command poppy::alnkit starts.")
     start = time.time()
@@ -40,18 +32,6 @@ def command_faskit(args):
 def command_plink2treemix(args):
     from poppy.plink2treemix import plink2treemix
     plink2treemix(args.input, args.output)
-
-
-def command_gensh(args):
-    from poppy.gensh import generate_new_sh
-    generate_new_sh(args.outfile, args)
-
-
-def command_help(args):
-    if args.command == "self":
-        parser.print_help()
-    else:
-        print(parser.parse_args([args.command, '--help']))
 
 
 def main():
@@ -78,20 +58,6 @@ def main():
     parser_summary.add_argument("--suffix",
                                 help = "Suffix of files to summary. (e.g. vcf.stat, cov, etc.)")
     parser_summary.set_defaults(handler = command_summary)
-
-    # vcfkit
-    help_txt = "Handle single VCF file."
-    help_txt += " See `poppy vcfkit -h`."
-    parser_vcfkit = subparsers.add_parser("vcfkit", help = help_txt)
-    parser_vcfkit.add_argument("-m", "--mode", choices = ["count", "select"],
-                               help = "Count number of each genotype.")
-    parser_vcfkit.add_argument("-i", "--infile", dest = "vcf",
-                               help = "Input VCF file name. Can be gzipped.")
-    parser_vcfkit.add_argument("-r", "--region",
-                               help = "Position to select (format: `Chromosome:Position`).")
-    parser_vcfkit.add_argument("-o", "--outfile",
-                               help = "PATH to output file (default: stdout).")
-    parser_vcfkit.set_defaults(handler = command_vcfkit)
 
     # alnkit
     help_txt = "Handle an alignment file."
@@ -134,26 +100,6 @@ def main():
     parser_plink2treemix.add_argument("-o", "--output",
                                       help = "PATH to output file.")
     parser_plink2treemix.set_defaults(handler = command_plink2treemix)
-
-    # gensh
-    help_txt = "Generate sh file with default settings."
-    help_txt += " See `poppy help gensh`."
-    parser_gensh = subparsers.add_parser("gensh", help = help_txt)
-    parser_gensh.add_argument("-o", "--outfile",
-                              help = "PATH to sh file to be generated.")
-    parser_gensh.add_argument("-m", "--memory",
-                              help = "Memory to require. `4G` for default but not written in sh.")
-    parser_gensh.add_argument("-t", "--time",
-                              help = "Time to require. `72:00:00` (72h) for default but not written in sh.")
-    parser_gensh.set_defaults(handler = command_gensh)
-
-    # help
-    help_txt = "Show help for commands."
-    help_txt += " e.g. `poppy help summary`."
-    parser_help = subparsers.add_parser("help", help = help_txt)
-    parser_help.add_argument("command", nargs = "?", default = "self",
-                             help = "Command to show help message.")
-    parser_help.set_defaults(handler = command_help)
 
     args = parser.parse_args()
     if hasattr(args, "handler"):
