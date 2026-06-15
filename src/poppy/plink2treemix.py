@@ -2,7 +2,7 @@
 from pathlib import Path
 
 
-def plink2treemix(input: Path, output: Path):
+def main(input: Path, output: Path):
     lines, pops = parse_plink(input)
     write_treemix(lines, pops, output)
 
@@ -37,3 +37,7 @@ def write_treemix(pl: dict, pops: list, tm: Path) -> None:
         for rs in pl.values():
             rss = [rs[pop] for pop in pops]
             f.write("\t".join(rss)+"\n")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,9 @@
 from pathlib import Path
 
-def alnkit(mode: str, infile: Path, outfile: Path, format: str):
+def main(infile: Path, outfile: Path, format: str):
 
     f = read_phylip(infile)
-    if mode == "trim":
-        f = remove_invariant_sites(f)
+    f = remove_invariant_sites(f)
 
     #if args.output:
     #    outfile = args.output
@@ -69,3 +68,7 @@ def get_value_length(dct):
 def is_varsite(dct, i):
     l = [v[i] for v in dct.values()]
     return len(set(l)) != 1
+
+
+if __name__ == "__main__":
+    main()

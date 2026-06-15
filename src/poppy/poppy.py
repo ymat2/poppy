@@ -15,23 +15,23 @@ def command_summary(args):
     print("Command poppy::summary ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
-def command_alnkit(args):
-    print("Command poppy::alnkit starts.")
+def command_ris(args):
+    print("Command poppy::remove_invariant_sites starts.")
     start = time.time()
-    from poppy.alnkit import alnkit
+    from poppy.remove_invariant_sites import main
     print("\tRemoving invariant sites...")
-    alnkit(args.mode, args.aln, args.outfile, args.format)
-    print("Command poppy::alnkit ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
+    main(args.input, args.output, args.format)
+    print("Command poppy::remove_invariant_sites ends. Time elapsed: {:,} sec.".format(int(time.time() - start)))
 
 
-def command_faskit(args):
-    from poppy.faskit import faskit
-    faskit(args.mode, args)
+def command_subseq(args):
+    from poppy.subseq import main
+    main(args)
 
 
 def command_plink2treemix(args):
-    from poppy.plink2treemix import plink2treemix
-    plink2treemix(args.input, args.output)
+    from poppy.plink2treemix import main
+    main(args.input, args.output)
 
 
 def main():
@@ -59,26 +59,22 @@ def main():
                                 help = "Suffix of files to summary. (e.g. vcf.stat, cov, etc.)")
     parser_summary.set_defaults(handler = command_summary)
 
-    # alnkit
-    help_txt = "Handle an alignment file."
-    help_txt += " See `poppy alnkit -h`."
-    parser_alnkit = subparsers.add_parser("alnkit", help = help_txt)
-    parser_alnkit.add_argument("-m", "--mode", choices = ["trim"],
-                               help = "Remove invariant sites.")
-    parser_alnkit.add_argument("-i", "--infile", dest = "aln",
+    # remove-invariant-sites
+    help_txt = "Remove invariant sites an alignment file."
+    help_txt += " See `poppy remove-invariant-sites -h`."
+    parser_alnkit = subparsers.add_parser("remove-invariant-sites", help = help_txt)
+    parser_alnkit.add_argument("-i", "--input",
                                help = "PATH to input alignment file. PHYLIP from vcf2phylip is assumed.")
-    parser_alnkit.add_argument("-o", "--outfile",
+    parser_alnkit.add_argument("-o", "--output",
                                help = "PATH to output alignment file.")
     parser_alnkit.add_argument("--format", choices = ["fasta", "phylip"],
                                help = "Format of output alignment.")
-    parser_alnkit.set_defaults(handler = command_alnkit)
+    parser_alnkit.set_defaults(handler = command_ris)
 
-    # faskit
-    help_txt = "Handle a FASTA file."
-    help_txt += " See `poppy faskit -h`."
-    parser_faskit = subparsers.add_parser("faskit", help = help_txt)
-    parser_faskit.add_argument("-m", "--mode", choices = ["extract"],
-                               help = "Extract partial sequence from FASTA file.")
+    # subseq
+    help_txt = "Extract partial sequence from FASTA file."
+    help_txt += " See `poppy subseq -h`."
+    parser_faskit = subparsers.add_parser("subseq", help = help_txt)
     parser_faskit.add_argument("-f", "--fasta",
                                help  = "PATH to FASTA file of genome sequence.")
     parser_faskit.add_argument("-c", "--chrom",
@@ -89,7 +85,7 @@ def main():
                                help = "Range of sequences too show around variant.")
     parser_faskit.add_argument("--ref", help = "Reference nucleotide.")
     parser_faskit.add_argument("--alt", help = "Alternative variant.")
-    parser_faskit.set_defaults(handler = command_faskit)
+    parser_faskit.set_defaults(handler = command_subseq)
 
     # plink2treemix
     help_txt = "Convert plink freq file to treemix input format."
