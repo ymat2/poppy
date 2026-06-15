@@ -26,18 +26,4 @@ poppy --help
 
 ## Usage
 
-Example usages:
-
-1. Extract partial sequence from FASTA.
-
-```sh
-poppy faskit --mode exract --fasta <fasta> --chrom <chromosome> --pos <position> --range 50
-```
-
-2. Remove invariant sites from alignment.
-
-```sh
-poppy alnkit --mode trim -i <alignment> -o <outfile> --format fasta
-```
-
-See also `poppy --help` / `poppy <command> --help`.
+See `poppy --help` / `poppy <command> --help`.
