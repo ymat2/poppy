@@ -1,7 +1,16 @@
+import argparse
 from pathlib import Path
 
 
-def main(args):
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--fasta", help  = "PATH to FASTA file of genome sequence.")
+    parser.add_argument("-c", "--chrom", help = "Chromosome or contig name.")
+    parser.add_argument("-p", "--pos", type = int, help = "Position of variant.")
+    parser.add_argument("-r", "--range", type = int, help = "Range of sequences too show around variant.")
+    parser.add_argument("--ref", help = "Reference nucleotide.")
+    parser.add_argument("--alt", help = "Alternative variant.")
+    args = parser.parse_args()
 
     start_position = args.pos - args.range
     end_position = args.pos + args.range

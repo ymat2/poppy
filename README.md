@@ -1,29 +1,45 @@
 # POPPY
 
-A personal python scripts for genomic data
+Miscellaneous python scripts for genomic data
 
 
 ## Installation
 
-Initiate virtual environment and install into the venv:
+Python3 (>=3.12) is required.
 
 ```sh
 cd /path/to/your/proj
-python3 -m venv .venv
-. .venv/bin/activate
-python3 -m pip install git+https://github.com/ymat2/poppy
-poppy --help
-# deactivate
+git clone https://github.com/ymat2/poppy.git
 ```
 
-Alternatively, it can be installed via [uv](https://docs.astral.sh/uv/):
+
+## Scripts
+
+See `python3 ***.py -h/--help` for each scripts.
+
+### `extract_subseq.py`
+
+Extract partial sequence from FASTA.
 
 ```sh
-uv tool install git+https://github.com/ymat2/poppy
-poppy --help
+~$ python3 extract_subseq.py -f tests/data/sample.ref.fa -c chr2 -p 10 -r 5
+# Chromosome: chr2
+# Position: from 5 to 15
+ACGTCGCTTGC
+-----*-----
 ```
 
+### `plink2treemix.py`
 
-## Usage
+Convert plink freq file into input file for treemix analysis.
 
-See `poppy --help` / `poppy <command> --help`.
+### `remove_invariant_sites.py`
+
+Remove invariant sites from multiple alignment.
+
+```sh
+~$ python3 remove_invariant_sites.py -i tests/data/sample.aln.phy -o sample.varsites.fa --format fasta
+
+MSA has 30 sites.
+25/30 variants are retained after filtering.
+```
