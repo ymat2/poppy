@@ -38,7 +38,7 @@ Convert plink freq file into input file for treemix analysis.
 Remove invariant sites from multiple alignment.
 
 ```sh
-~$ python3 remove_invariant_sites.py -i tests/data/sample.aln.phy -o sample.varsites.fa --format fasta
+~$ python3 remove_invariant_sites.py -i tests/data/sample.aln.phy -o tests/data/sample.varsites.fa --format fasta
 
 MSA has 30 sites.
 25/30 variants are retained after filtering.

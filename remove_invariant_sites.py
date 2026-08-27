@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", help = "PATH to input alignment file. PHYLIP from vcf2phylip is assumed.")
@@ -14,7 +15,7 @@ def main():
 
 
 def read_phylip(file: Path):
-    seq_dict = dict()
+    seq_dict = {}
     with open(file) as f:
         next(f)
         for line in f:
@@ -29,27 +30,25 @@ def write_phylip(seq_dict: dict, file: Path, format: str):
     if format == "phylip":
         with open(file, "w") as f:
             f.write(str(num_sp)+"\t"+str(seq_length)+"\n")
-            for k,v in seq_dict.items():
-                f.write(k+"\t"+v+"\n")
+            f.writelines(k+"\t"+v+"\n" for k,v in seq_dict.items())
     elif format == "fasta":
         with open(file, "w") as f:
-            for k,v in seq_dict.items():
-                f.write(">"+k+"\n"+v+"\n")
+            f.writelines(">"+k+"\n"+v+"\n" for k,v in seq_dict.items())
 
 
 def remove_invariant_sites(dct: dict):
-    varsites = {k: [] for k in dct.keys()}
+    varsites = {k: [] for k in dct}
     l = get_value_length(dct)
     lv = 0
     print("\nMSA has", l, "sites.")
     for i in range(l):
         if i>0 and i % 50000 == 0:
-            print("\t{:d} sites are validated.".format(i))
+            print(f"\t{i:d} sites are validated.")
         if is_varsite(dct, i):
             lv += 1
             for k,v in dct.items():
                 varsites[k].append(v[i])
-    for k in varsites.keys():
+    for k in varsites:
         varsites[k] = ''.join(varsites[k])
     print(str(lv)+"/"+str(l)+" variants are retained after filtering.")
     return varsites

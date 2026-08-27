@@ -14,8 +14,8 @@ def main():
 
 
 def parse_plink(plink: Path) -> tuple[dict, list]:
-    rs2pop = dict()
-    pops = list()
+    rs2pop = {}
+    pops = []
 
     with open(plink) as f:
         next(f)
@@ -30,7 +30,7 @@ def parse_plink(plink: Path) -> tuple[dict, list]:
                 pops.append(pop)
 
             if rs not in rs2pop:
-                rs2pop[rs] = dict()
+                rs2pop[rs] = {}
             if pop not in rs2pop[rs]:
                 rs2pop[rs][pop] = str(mac)+","+str(int(total)-int(mac))
 
